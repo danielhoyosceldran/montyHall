@@ -9,41 +9,44 @@ using namespace std;
 #define NUM_PORTES 3
 
 //int randNum(int maxVal) { return 1 + rand() % (maxVal); }
-int game(int numSimulation, bool changeDoor)
+int simulationGame(int numSimulation, bool changeDoor)
 {
+    int wins = 0;
     for (int i = 0; i < numSimulation; i++)
     {
-        int winningDoor   = 1 + rand() % NUM_PORTES;
+        int winningDoor = 1 + rand() % NUM_PORTES;
         int chosenDoor  = 1 + rand() % NUM_PORTES;
+
         int openDoor;
         do
         {
-            openDoor   = 1 + rand() % PORTES;
-        } while (openDoor == winningDoor || openDoor == portaEscollida);
+            openDoor   = 1 + rand() % NUM_PORTES;
+        } while (openDoor == winningDoor || openDoor == chosenDoor);
 
         if (changeDoor)
         {
             bool doors[3] = { false };
             doors[chosenDoor - 1]  = true;
             doors[openDoor - 1]   = true;
-
             do
             {
                 chosenDoor = ((chosenDoor) % 3) + 1;
-            } while (!doors[chosenDoor - 1]);
+            } while (doors[chosenDoor - 1]);
         }
+        if (chosenDoor == winningDoor) wins++;
     }
+    return wins;
 }
 
-int charToInt(char *argv[])
+int charToInt(char *argv)
 {
     int value = 0;
     int i = 0;
 
-    while (argv[1][i] != '\0')
+    while (argv[i] != '\0')
     {
         value *= 10;
-        value += (int)argv[1][i] - '0';
+        value += (int)argv[i] - '0';
         i++;
     }
 
@@ -52,8 +55,22 @@ int charToInt(char *argv[])
 
 int main(int argc, char *argv[])
 {
+    cout << endl;
+
     srand(time(NULL));
-    if (((int)*argv[1] - '0') < 1) return -1; // arg error  
+    if (((int)*argv[1] - '0') < 1) return -1; // arg error
+    
+    int numSim = charToInt(argv[1]);
+    cout << "Number of simulations: " << numSim << endl;
+
+    // wpc = winning percent
+    int wpcChanging     = simulationGame(numSim, true);
+    int wpcNoChanging   = simulationGame(numSim, false);
+
+    cout << "Winning chance changin yout door with " << numSim << " simulations: " << wpcChanging << endl;
+    cout << "Winning chance not changin your door with " << numSim << " simulations: " << wpcNoChanging << endl;
+
+    cout << endl;
     
     return 0;
 }
