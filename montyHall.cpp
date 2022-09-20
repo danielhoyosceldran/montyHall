@@ -55,20 +55,25 @@ int charToInt(char *argv)
 
 int main(int argc, char *argv[])
 {
-    cout << endl;
-
     srand(time(NULL));
-    if (((int)*argv[1] - '0') < 1) return -1; // arg error
+    cout << endl;
+    int numSim;
     
-    int numSim = charToInt(argv[1]);
+    if (argc < 2)   numSim = 100;
+    else
+    {
+        if (((int)*argv[1] - '0') < 1)  return -1; // argv error
+        numSim = charToInt(argv[1]);
+    }
+
     cout << "Number of simulations: " << numSim << endl;
 
     // wpc = winning percent
-    int wpcChanging     = simulationGame(numSim, true);
-    int wpcNoChanging   = simulationGame(numSim, false);
+    float wpcChanging     = simulationGame(numSim, true) / (float)numSim * 100;
+    float wpcNoChanging   = simulationGame(numSim, false) / (float)numSim * 100;
 
-    cout << "Winning chance changin yout door with " << numSim << " simulations: " << wpcChanging << endl;
-    cout << "Winning chance not changin your door with " << numSim << " simulations: " << wpcNoChanging << endl;
+    cout << "Winning chance changin yout door with " << numSim << " simulations: " << wpcChanging << "%" << endl;
+    cout << "Winning chance not changin your door with " << numSim << " simulations: " << wpcNoChanging << "%" << endl;
 
     cout << endl;
     
